@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>年金機構 電子通知書 届出単位変換ツール</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    header {
+      background: linear-gradient(135deg, #1a5f7a 0%, #159895 100%);
+      color: #fff;
+      padding: 28px 36px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    header p {
+      margin: 10px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    .main {
+      padding: 36px;
+    }
+    .guide-box {
+      background: #e8f4f8;
+      border: 1px solid #b8dce8;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+    }
+    .guide-box h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: #1a5f7a;
+    }
+    .guide-box ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .guide-box li {
+      margin-bottom: 6px;
+    }
+    .section {
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #159895;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.9rem;
+    }
+    .drop-zone {
+      border: 2px dashed #b0b0b0;
+      border-radius: 10px;
+      padding: 28px 24px;
+      text-align: center;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #159895;
+      background: #e8f6f6;
+    }
+    .drop-zone.has-files {
+      border-color: #159895;
+      background: #f0faf9;
+    }
+    .drop-zone input {
+      display: none;
+    }
+    .drop-zone .icon {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+    .drop-zone .text {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+    }
+    .drop-zone .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .file-list {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: #555;
+      text-align: left;
+    }
+    .file-list strong {
+      color: #159895;
+    }
+    .file-list ul {
+      margin: 6px 0 0;
+      padding-left: 20px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #159895;
+      color: #fff;
+      font-size: 1.05rem;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #128a87;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(21, 152, 149, 0.3);
+    }
+    .btn-primary:disabled {
+      background: #bbb;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-secondary {
+      background: #fff;
+      color: #159895;
+      border: 2px solid #159895;
+    }
+    .btn-secondary:hover {
+      background: #e8f6f6;
+    }
+    .actions {
+      margin-top: 24px;
+    }
+    .result-area {
+      margin-top: 28px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+    }
+    .result-area.visible {
+      display: block;
+    }
+    .result-header {
+      background: #f5f5f5;
+      padding: 14px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .result-tabs {
+      display: flex;
+      background: #f0f0f0;
+      overflow-x: auto;
+      flex-wrap: wrap;
+      padding: 4px 8px 0;
+    }
+    .result-tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-radius: 8px 8px 0 0;
+      white-space: nowrap;
+      margin-bottom: 0;
+    }
+    .result-tab:hover {
+      background: #e5e5e5;
+    }
+    .result-tab.active {
+      background: #fff;
+      font-weight: 600;
+      border: 1px solid #e0e0e0;
+      border-bottom: 1px solid #fff;
+      margin-bottom: -1px;
+    }
+    .result-frame {
+      width: 100%;
+      height: 65vh;
+      min-height: 480px;
+      border: none;
+      display: none;
+    }
+    .result-frame.active {
+      display: block;
+    }
+    .result-toolbar {
+      padding: 16px 20px;
+      background: #f8f8f8;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .result-toolbar .hint {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .error-msg {
+      color: #c62828;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+    .status {
+      font-size: 0.9rem;
+      color: #159895;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .notice {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      .result-area, .result-area * { visibility: visible; }
+      .result-area { position: absolute; left: 0; top: 0; width: 100%; }
+      .result-tabs, .result-toolbar, .result-header { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>年金機構 電子通知書 届出単位変換ツール</h1>
+      <p>被保険者単位の通知書を届出（到達番号）単位の一覧表形式に変換し、PDFで保存できます</p>
+    </header>
+    <main class="main">
+      <div class="guide-box">
+        <h3>📋 使い方（3ステップ）</h3>
+        <ol>
+          <li><strong>① 通知書フォルダ</strong>を選択（日本年金機構から届いた電子通知書のXMLが入ったフォルダ）</li>
+          <li><strong>② RenkiStylesheet フォルダ</strong>を選択（このツール内の「RenkiStylesheet」フォルダ）<br>
+          <span style="font-size:0.85em;color:#666">※ すでに.xslを置き換えた「変換フォルダ」をお持ちの場合は、①のみでOK</span></li>
+          <li><strong>③ 変換する</strong>をクリック → 表示されたら<strong>印刷 / PDF保存</strong>でPDFに保存</li>
+        </ol>
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="section-num">1</span> 通知書フォルダを選択</div>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="folderInput" webkitdirectory directory multiple>
+          <div class="icon">📁</div>
+          <div class="text">ここをクリックしてフォルダを選択</div>
+          <div class="hint">日本年金機構から届いた電子通知書（.xml ファイル）が入ったフォルダを選んでください</div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="section-num">2</span> RenkiStylesheet フォルダを選択</div>
+        <div class="drop-zone" id="xslDropZone">
+          <input type="file" id="xslFolderInput" webkitdirectory directory multiple>
+          <div class="icon">📂</div>
+          <div class="text">ここをクリックしてフォルダを選択</div>
+          <div class="hint">このツール内の「RenkiStylesheet」フォルダを選んでください<br>
+          （届出単位用の変換ファイル。※ すでに.xslを置き換えた変換フォルダを①で選んだ場合は不要）</div>
+          <div class="file-list" id="xslFileList"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="section-num">3</span> 変換してPDF保存</div>
+        <div class="actions">
+          <button class="btn btn-primary" id="convertBtn" disabled>変換する</button>
+        </div>
+        <div class="status" id="status"></div>
+        <div class="error-msg" id="errorMsg"></div>
+      </div>
+      <div class="result-area" id="resultArea">
+        <div class="result-header">変換結果</div>
+        <div class="result-tabs" id="resultTabs"></div>
+        <div class="result-frames" id="resultFrames"></div>
+        <div class="result-toolbar">
+          <button class="btn btn-secondary" id="printBtn">印刷 / PDF保存</button>
+          <span class="hint">→ 印刷ダイアログで「PDFに保存」または「Microsoft Print to PDF」を選択</span>
+        </div>
+      </div>
+      <div class="notice">
+        ※ 外字を含む電子通知書は変換できません（日本年金機構の仕様）<br>
+        ※ 推奨ブラウザ：Chrome、Edge、Safari
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      const folderInput = document.getElementById('folderInput');
+      const xslFolderInput = document.getElementById('xslFolderInput');
+      const dropZone = document.getElementById('dropZone');
+      const xslDropZone = document.getElementById('xslDropZone');
+      const fileList = document.getElementById('fileList');
+      const xslFileList = document.getElementById('xslFileList');
+      const convertBtn = document.getElementById('convertBtn');
+      const status = document.getElementById('status');
+      const errorMsg = document.getElementById('errorMsg');
+      const resultArea = document.getElementById('resultArea');
+      const resultTabs = document.getElementById('resultTabs');
+      const resultFrames = document.getElementById('resultFrames');
+      const printBtn = document.getElementById('printBtn');
+
+      let xmlFiles = [];
+      let xslFromNotification = [];
+      let xslFromRenkiStylesheet = [];
+      let transformedResults = [];
+
+      function getXslFiles() {
+        return mergeXsl(xslFromNotification, xslFromRenkiStylesheet);
+      }
+
+      // フォルダ選択
+      dropZone.addEventListener('click', () => folderInput.click());
+      xslDropZone.addEventListener('click', () => xslFolderInput.click());
+      folderInput.addEventListener('change', (e) => {
+        const arr = Array.from(e.target.files || []);
+        xmlFiles = arr.filter(f => f.name.toLowerCase().endsWith('.xml'));
+        xslFromNotification = arr.filter(f => f.name.toLowerCase().endsWith('.xsl'));
+        updateFileList();
+      });
+      xslFolderInput.addEventListener('change', (e) => {
+        const arr = Array.from(e.target.files || []);
+        xslFromRenkiStylesheet = arr.filter(f => f.name.toLowerCase().endsWith('.xsl'));
+        updateFileList();
+      });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+      xslDropZone.addEventListener('dragover', (e) => { e.preventDefault(); xslDropZone.classList.add('dragover'); });
+      xslDropZone.addEventListener('dragleave', () => xslDropZone.classList.remove('dragover'));
+      dropZone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const items = e.dataTransfer.items;
+        if (!items) return;
+        const filesToAdd = [];
+        for (let i = 0; i < items.length; i++) {
+          const entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+          if (entry && entry.isDirectory) await readDir(entry, filesToAdd);
+          else { const f = items[i].getAsFile(); if (f) filesToAdd.push(f); }
+        }
+        xmlFiles = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xml'));
+        xslFromNotification = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xsl'));
+        updateFileList();
+      });
+      xslDropZone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        xslDropZone.classList.remove('dragover');
+        const items = e.dataTransfer.items;
+        if (!items) return;
+        const filesToAdd = [];
+        for (let i = 0; i < items.length; i++) {
+          const entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+          if (entry && entry.isDirectory) await readDir(entry, filesToAdd);
+          else { const f = items[i].getAsFile(); if (f) filesToAdd.push(f); }
+        }
+        xslFromRenkiStylesheet = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xsl'));
+        updateFileList();
+      });
+
+      function readDir(dirEntry, out) {
+        return new Promise((resolve) => {
+          const reader = dirEntry.createReader();
+          reader.readEntries(async (entries) => {
+            for (const entry of entries) {
+              if (entry.isDirectory) {
+                await readDir(entry, out);
+              } else {
+                await new Promise((res) => {
+                  entry.file((f) => {
+                    out.push(f);
+                    res();
+                  });
+                });
+              }
+            }
+            resolve();
+          });
+        });
+      }
+
+      function mergeXsl(fromNotification, fromRenkiStylesheet) {
+        const map = new Map();
+        fromNotification.forEach(f => map.set(getBaseName(f.name), f));
+        fromRenkiStylesheet.forEach(f => map.set(getBaseName(f.name), f));
+        return Array.from(map.values());
+      }
+
+      function updateFileList() {
+        const xslFiles = getXslFiles();
+        fileList.innerHTML = xmlFiles.length > 0
+          ? `<strong>選択済み：</strong> XML ${xmlFiles.length}件<ul>${xmlFiles.map(f => '<li>' + f.name + '</li>').join('')}</ul>`
+          : '<span style="color:#999">未選択</span>';
+        xslFileList.innerHTML = xslFiles.length > 0
+          ? `<strong>選択済み：</strong> XSL ${xslFiles.length}件<ul>${xslFiles.map(f => '<li>' + f.name + '</li>').join('')}</ul>`
+          : '<span style="color:#999">未選択（RenkiStylesheet フォルダを選択してください）</span>';
+        dropZone.classList.toggle('has-files', xmlFiles.length > 0);
+        xslDropZone.classList.toggle('has-files', xslFiles.length > 0);
+        convertBtn.disabled = xmlFiles.length === 0 || xslFiles.length === 0;
+        errorMsg.textContent = '';
+        if (xmlFiles.length === 0) errorMsg.textContent = '① 通知書フォルダを選択してください。';
+        else if (xslFiles.length === 0) errorMsg.textContent = '② RenkiStylesheet フォルダを選択してください。（このツール内の RenkiStylesheet フォルダ）';
+      }
+
+      function getBaseName(filename) {
+        return filename.replace(/\.[^.]+$/, '');
+      }
+
+      function parseXml(text) {
+        const parser = new DOMParser();
+        return parser.parseFromString(text, 'text/xml');
+      }
+
+      function transformXml(xmlDoc, xslDoc) {
+        const processor = new XSLTProcessor();
+        processor.importStylesheet(xslDoc);
+        const result = processor.transformToDocument(xmlDoc);
+        return new XMLSerializer().serializeToString(result);
+      }
+
+      convertBtn.addEventListener('click', async () => {
+        errorMsg.textContent = '';
+        status.textContent = '変換中...';
+        convertBtn.disabled = true;
+
+        const xslFiles = getXslFiles();
+        const xslMap = {};
+        xslFiles.forEach(f => {
+          const base = getBaseName(f.name);
+          if (!xslMap[base]) xslMap[base] = f;
+        });
+
+        transformedResults = [];
+        const errors = [];
+
+        for (const xmlFile of xmlFiles) {
+          const base = getBaseName(xmlFile.name);
+          const xslFile = xslMap[base];
+          if (!xslFile) {
+            errors.push(`${xmlFile.name}: 対応する ${base}.xsl が見つかりません`);
+            continue;
+          }
+          try {
+            const xmlText = await readFile(xmlFile);
+            const xslText = await readFile(xslFile);
+            const xmlDoc = parseXml(xmlText);
+            const xslDoc = parseXml(xslText);
+            const html = transformXml(xmlDoc, xslDoc);
+            transformedResults.push({ name: xmlFile.name, html });
+          } catch (e) {
+            errors.push(`${xmlFile.name}: ${e.message || e}`);
+          }
+        }
+
+        status.textContent = `変換完了: ${transformedResults.length}件`;
+        if (errors.length > 0) {
+          errorMsg.textContent = errors.join('\n');
+        }
+        convertBtn.disabled = false;
+
+        if (transformedResults.length > 0) {
+          renderResults();
+          resultArea.classList.add('visible');
+        }
+      });
+
+      function readFile(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('ファイルの読み込みに失敗しました'));
+          reader.readAsText(file, 'UTF-8');
+        });
+      }
+
+      function renderResults() {
+        resultTabs.innerHTML = '';
+        resultFrames.innerHTML = '';
+        transformedResults.forEach((r, i) => {
+          const tab = document.createElement('div');
+          tab.className = 'result-tab' + (i === 0 ? ' active' : '');
+          tab.textContent = r.name;
+          tab.addEventListener('click', () => {
+            resultTabs.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
+            resultFrames.querySelectorAll('.result-frame').forEach(f => f.classList.remove('active'));
+            tab.classList.add('active');
+            resultFrames.children[i].classList.add('active');
+          });
+          resultTabs.appendChild(tab);
+
+          const iframe = document.createElement('iframe');
+          iframe.className = 'result-frame' + (i === 0 ? ' active' : '');
+          iframe.sandbox = 'allow-same-origin';
+          resultFrames.appendChild(iframe);
+          iframe.srcdoc = r.html;
+        });
+      }
+
+      printBtn.addEventListener('click', () => {
+        const activeFrame = resultFrames.querySelector('.result-frame.active');
+        if (!activeFrame || !activeFrame.contentWindow) return;
+        activeFrame.contentWindow.print();
+      });
+    })();
+  </script>
+</body>
+</html>
