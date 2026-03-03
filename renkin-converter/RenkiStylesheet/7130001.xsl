@@ -106,6 +106,9 @@
 						_::-webkit-full-page-media, _:future, :root pre.oshirase {
 							white-space:break-spaces;
 						}
+						_::-webkit-full-page-media, _:future, :root pre.oshirase-box {
+							margin:0;
+						}
 						_::-webkit-full-page-media, _:future, :root div {
 							letter-spacing:-0.4px;
 						}
@@ -271,13 +274,33 @@
 						font-family		:YuMincho, Yu Mincho;
 						font-size		:7pt;
 					}
+					td.oshirase-box
+					{
+						box-sizing		:border-box;
+						overflow		:hidden;
+						padding		:4px 6px;
+					}
+					pre.oshirase-box
+					{
+						margin			:0;
+						padding			:0;
+						font-size		:6.5pt;
+						line-height		:10px;
+						word-wrap		:break-word;
+						word-break		:break-all;
+						white-space		:pre-wrap;
+						max-width		:100%;
+						overflow-wrap	:break-word;
+					}
 				</style>
 			</head>
 			<body style="word-break:break-all;">
 				<table border="0" width="100%" style="center" >
-						<td  align="center" style="vertical-align:top;">
+					<tr>
+						<td align="center" style="vertical-align:top;">
 							<xsl:apply-templates/>
 						</td>
+					</tr>
 				</table>
 			</body>
 		</html>
@@ -313,13 +336,53 @@
 							<xsl:with-param name="pagecnt_1" select="1" />
 						</xsl:apply-templates>
 						<table class="hihokensha" cellpadding="0" cellspacing="0">
-							<td style="vertical-align:top;">
+							<tr>
+								<td style="vertical-align:top;">
 								<table class="detail" cellpadding="0" cellspacing="0">
+									<colgroup>
+										<col width="25px"/>
+										<col width="45px"/>
+										<col width="150px"/>
+										<col width="15px"/>
+										<col width="15px"/>
+										<col width="5px"/>
+										<col width="21px"/>
+										<col width="66px"/>
+										<col width="66px"/>
+										<col width="15px"/>
+										<col width="15px"/>
+										<col width="5px"/>
+										<col width="15px"/>
+										<col width="5px"/>
+										<col width="21px"/>
+										<col width="60px"/>
+										<col width="25px"/>
+									</colgroup>
+									<tr>
+										<td></td>
+										<td class="midashiS_C allline" style="height:30px;" rowspan="2">被保険者<br/>整理番号</td>
+										<td class="midashiS_C allline" rowspan="2">被保険者氏名</td>
+										<td class="midashiS_L linetlr" style="padding-left:6px;" colspan="4">※1</td>
+										<td class="midashiS_C linetrb" colspan="2">決定後の標準報酬月額</td>
+										<td class="midashiS_L linetlr" style="padding-left:6px;" colspan="6">※1</td>
+										<td class="midashiS_L linetlr" style="padding-left:6px;">※2</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td class="midashiS_C linelrb" colspan="4">適用年月</td>
+										<td class="midashiS_C allline">（健保）</td>
+										<td class="midashiS_C allline">（厚年）</td>
+										<td class="midashiS_C linelrb" colspan="6">生年月日</td>
+										<td class="midashiS_C linelrb">種別</td>
+										<td></td>
+									</tr>
 									<xsl:apply-templates select="_被保険者" mode="hihokensha">
 										<xsl:with-param name="pagecnt_1" select="$count_1" />
 									</xsl:apply-templates>
 								</table>
-							</td>
+								</td>
+							</tr>
 						</table>
 						<xsl:apply-templates select="_被保険者" mode="footer">
 							<xsl:with-param name="pagecnt_1" select="1" />
@@ -361,10 +424,12 @@
 		<xsl:param name="pagecnt_1" />
 		<xsl:if test="($pagecnt_1=position())">
 			<table class="detail" cellpadding="0" cellspacing="0">
-				<td style="vertical-align:top;">
+				<tr>
+					<td style="vertical-align:top;">
 				
 					<table class="detail" cellpadding="0" cellspacing="0">
-						<td style="vertical-align:top;">
+						<tr>
+							<td style="vertical-align:top;">
 							
 							<table class="Lterritory" >
 								<colgroup>
@@ -493,7 +558,7 @@
 								</tr>
 							</table>
 							
-							<table class="Rterritory" cellpadding="3" cellspacing="0">
+							<table class="Rterritory" cellpadding="0" cellspacing="0">
 								<colgroup>
 									<col width="40px" />
 									<col width="250px" />
@@ -501,12 +566,16 @@
 								</colgroup>
 								<tr>
 									<td></td>
-									<td class="normalS_TL allline" style="height:185px;line-height:11px;"><pre class="oshirase"><xsl:value-of select="機構からのお知らせ" /></pre></td>
+									<td class="normalS_TL allline oshirase-box" style="height:185px;"><pre class="oshirase oshirase-box"><xsl:choose>
+										<xsl:when test="機構からのお知らせ='通知書は、処理が完了した方の分から順次発送しております。すでにご提出済みの方が今回の通知書に含まれていない場合、処理が完了次第、送付いたします。'">通知書は、処理が完了した方の分から順次発送しております。&#10;すでにご提出済みの方が今回の通知書に含まれていない場合、&#10;処理が完了次第、送付いたします。</xsl:when>
+										<xsl:otherwise><xsl:value-of select="機構からのお知らせ" /></xsl:otherwise>
+									</xsl:choose></pre></td>
 									<td></td>
 								</tr>
 							</table>
 							
 						</td>
+					</tr>
 					</table>
 					
 					<table class="detail">
@@ -521,7 +590,7 @@
 							<col width="85px" />
 							<col width="10px" />
 							<col width="60px" />
-							<col width="445px" />
+							<col width="455px" />
 						</colgroup>
 						<tr>
 							<td></td>
@@ -530,16 +599,6 @@
 							<td class="normalM_L" style="height:15px"><xsl:value-of select="事業所整理記号" /></td>
 							<td></td>
 						</tr>
-					</table>
-					
-					<table class="detail" cellpadding="1" cellspacing="0">
-						<colgroup>
-							<col width="30px" />
-							<col width="80px" />
-							<col width="15px" />
-							<col width="45px" />
-							<col width="470px" />
-						</colgroup>
 						<tr>
 							<td></td>
 							<td class="midashiM_L" style="height:15px">事業所番号</td>
@@ -549,77 +608,15 @@
 						</tr>
 					</table>
 				</td>
+				</tr>
 			</table>
 			
-			<table class="detail" cellpadding="0" cellspacing="0">
-				<td style="vertical-align:top;">
-					<table class="detail" cellpadding="0" cellspacing="0">
-						<colgroup>
-							<col width="25px"/>
-							<col width="45px"/>
-							<col width="150px"/>
-							<col width="15px"/>
-							<col width="15px"/>
-							<col width="5px"/>
-							<col width="21px"/>
-							<col width="66px"/>
-							<col width="66px"/>
-							<col width="15px"/>
-							<col width="15px"/>
-							<col width="5px"/>
-							<col width="15px"/>
-							<col width="5px"/>
-							<col width="21px"/>
-							<col width="60px"/>
-							<col width="25px"/>
-						</colgroup>
-						<tr>
-							<td></td>
-							<td class="midashiS_C allline" style="height:30px;" rowspan="2">被保険者<br/>整理番号</td>
-							<td class="midashiS_C allline" rowspan="2">被保険者氏名</td>
-							<td class="midashiS_L linetlr" style="padding-left:6px;" colspan="4">※1</td>
-							<td class="midashiS_C linetrb" colspan="2">決定後の標準報酬月額</td>
-							<td class="midashiS_L linetlr" style="padding-left:6px;" colspan="6">※1</td>
-							<td class="midashiS_L linetlr" style="padding-left:6px;">※2</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="midashiS_C linelrb" colspan="4">適用年月</td>
-							<td class="midashiS_C allline">（健保）</td>
-							<td class="midashiS_C allline">（厚年）</td>
-							<td class="midashiS_C linelrb" colspan="6">生年月日</td>
-							<td class="midashiS_C linelrb">種別</td>
-							<td></td>
-						</tr>
-					</table>
-				</td>
-			</table>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="_被保険者" mode="hihokensha">
 		<xsl:param name="pagecnt_1" />
 		<xsl:if test="($pagecnt_1=ceiling(position() div 15))">
-			<colgroup>
-				<col width="25px"/>
-				<col width="45px"/>
-				<col width="150px"/>
-				<col width="15px"/>
-				<col width="15px"/>
-				<col width="5px"/>
-				<col width="21px"/>
-				<col width="66px"/>
-				<col width="66px"/>
-				<col width="15px"/>
-				<col width="15px"/>
-				<col width="5px"/>
-				<col width="15px"/>
-				<col width="5px"/>
-				<col width="21px"/>
-				<col width="60px"/>
-				<col width="25px"/>
-			</colgroup>
 			<tr>
 				<td></td>
 				<xsl:if test="被保険者整理番号!=''">
@@ -701,11 +698,12 @@
 		<xsl:if test="($pagecnt_1=position())">
 			
 			<table class="detail" cellpadding="1" cellspacing="0">
-				<td style="vertical-align:top;">
+				<tr>
+					<td style="vertical-align:top;">
 					<table class="detail" >
 						<colgroup>
 							<col width="25px" />
-						<col width="605px" />
+							<col width="605px" />
 						</colgroup>
 						<tr>
 							<td></td>
@@ -720,11 +718,13 @@
 							<td class="normalM_L" style="height:30px;padding-left:15px;"></td>
 						</tr>
 					</table>
-				</td>
+					</td>
+				</tr>
 			</table>
 			
 			<table class="detail" cellpadding="1" cellspacing="0">
-				<td style="vertical-align:top;">
+				<tr>
+					<td style="vertical-align:top;">
 					<table class="detail" >
 						<colgroup>
 							<col width="367px" />
@@ -766,7 +766,8 @@
 							<td class="normalM_L" style="height:18px">（<xsl:value-of select="年金事務所名" />年金事務所）</td>
 						</tr>
 					</table>
-				</td>
+					</td>
+				</tr>
 			</table>
 		</xsl:if>
 	</xsl:template>
