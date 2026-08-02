@@ -37,9 +37,7 @@
       font-size: 0.95rem;
       opacity: 0.95;
     }
-    .main {
-      padding: 36px;
-    }
+    .main { padding: 36px; }
     .guide-box {
       background: #e8f4f8;
       border: 1px solid #b8dce8;
@@ -57,12 +55,8 @@
       margin: 0;
       padding-left: 20px;
     }
-    .guide-box li {
-      margin-bottom: 6px;
-    }
-    .section {
-      margin-bottom: 28px;
-    }
+    .guide-box li { margin-bottom: 6px; }
+    .section { margin-bottom: 28px; }
     .section-title {
       font-size: 1rem;
       font-weight: 600;
@@ -82,7 +76,9 @@
       color: #fff;
       border-radius: 50%;
       font-size: 0.9rem;
+      flex-shrink: 0;
     }
+    .section-num.done { background: #4caf50; }
     .drop-zone {
       border: 2px dashed #b0b0b0;
       border-radius: 10px;
@@ -92,17 +88,20 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .drop-zone:hover, .drop-zone.dragover {
+    .drop-zone:hover, .drop-zone.dragover, .drop-zone:focus {
       border-color: #159895;
       background: #e8f6f6;
+      outline: none;
+    }
+    .drop-zone:focus-visible {
+      box-shadow: 0 0 0 3px rgba(21, 152, 149, 0.35);
     }
     .drop-zone.has-files {
       border-color: #159895;
+      border-style: solid;
       background: #f0faf9;
     }
-    .drop-zone input {
-      display: none;
-    }
+    .drop-zone input { display: none; }
     .drop-zone .icon {
       font-size: 2.2rem;
       margin-bottom: 10px;
@@ -125,15 +124,26 @@
       color: #555;
       text-align: left;
     }
-    .file-list strong {
-      color: #159895;
-    }
+    .file-list strong { color: #159895; }
     .file-list ul {
       margin: 6px 0 0;
       padding-left: 20px;
       max-height: 100px;
       overflow-y: auto;
     }
+    .dialog-help {
+      display: none;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #5d4037;
+      line-height: 1.7;
+    }
+    .dialog-help.visible { display: block; }
+    .dialog-help strong { color: #e65100; }
     .btn {
       display: inline-block;
       padding: 14px 28px;
@@ -164,11 +174,26 @@
       color: #159895;
       border: 2px solid #159895;
     }
-    .btn-secondary:hover {
-      background: #e8f6f6;
+    .btn-secondary:hover:not(:disabled) { background: #e8f6f6; }
+    .btn-secondary:disabled {
+      color: #999;
+      border-color: #ccc;
+      cursor: not-allowed;
     }
+    .btn-reset {
+      background: #fff;
+      color: #888;
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+    }
+    .btn-reset:hover { background: #f5f5f5; color: #555; }
     .actions {
-      margin-top: 24px;
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
     }
     .result-area {
       margin-top: 28px;
@@ -177,9 +202,7 @@
       overflow: hidden;
       display: none;
     }
-    .result-area.visible {
-      display: block;
-    }
+    .result-area.visible { display: block; }
     .result-header {
       background: #f5f5f5;
       padding: 14px 20px;
@@ -192,6 +215,7 @@
       overflow-x: auto;
       flex-wrap: wrap;
       padding: 4px 8px 0;
+      gap: 2px;
     }
     .result-tab {
       padding: 12px 20px;
@@ -199,11 +223,12 @@
       font-size: 0.9rem;
       border-radius: 8px 8px 0 0;
       white-space: nowrap;
-      margin-bottom: 0;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      color: inherit;
     }
-    .result-tab:hover {
-      background: #e5e5e5;
-    }
+    .result-tab:hover { background: #e5e5e5; }
     .result-tab.active {
       background: #fff;
       font-weight: 600;
@@ -211,16 +236,19 @@
       border-bottom: 1px solid #fff;
       margin-bottom: -1px;
     }
+    .result-tab:focus-visible {
+      outline: 2px solid #159895;
+      outline-offset: -2px;
+    }
     .result-frame {
       width: 100%;
       height: 65vh;
       min-height: 480px;
       border: none;
       display: none;
+      background: #fff;
     }
-    .result-frame.active {
-      display: block;
-    }
+    .result-frame.active { display: block; }
     .result-toolbar {
       padding: 16px 20px;
       background: #f8f8f8;
@@ -230,9 +258,16 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .result-toolbar .hint {
+    .result-toolbar .pdf-hint {
       font-size: 0.85rem;
-      color: #666;
+      color: #555;
+      background: #fff3cd;
+      border: 1px solid #e6d58a;
+      border-radius: 6px;
+      padding: 10px 14px;
+      flex: 1;
+      min-width: 200px;
+      line-height: 1.6;
     }
     .error-msg {
       color: #c62828;
@@ -246,17 +281,70 @@
       font-weight: 500;
       margin-top: 10px;
     }
+    .status.ok { color: #4caf50; }
+    .status.err { color: #c62828; }
     .notice {
       font-size: 0.8rem;
       color: #888;
       margin-top: 24px;
       padding-top: 20px;
       border-top: 1px solid #eee;
+      line-height: 1.8;
+    }
+    .security-badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+    .site-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: #999;
+    }
+    .site-footer img {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+    .site-footer a {
+      color: #7a8a96;
+      text-decoration: none;
+    }
+    .site-footer a:hover { color: #159895; text-decoration: underline; }
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #ddd;
+      border-top: 3px solid #159895;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      header, .main { padding: 20px; }
+      header h1 { font-size: 1.25rem; }
+      .result-frame { height: 55vh; min-height: 320px; }
     }
     @media print {
       body * { visibility: hidden; }
       .result-area, .result-area * { visibility: visible; }
-      .result-area { position: absolute; left: 0; top: 0; width: 100%; }
+      .result-area { position: absolute; left: 0; top: 0; width: 100%; border: none; }
       .result-tabs, .result-toolbar, .result-header { display: none !important; }
     }
   </style>
@@ -269,7 +357,7 @@
     </header>
     <main class="main">
       <div class="guide-box">
-        <h3>📋 使い方（3ステップ）</h3>
+        <h3>使い方（3ステップ）</h3>
         <ol>
           <li><strong>① 通知書フォルダ</strong>を選択（日本年金機構から届いた電子通知書のXMLが入ったフォルダ）</li>
           <li><strong>② RenkiStylesheet フォルダ</strong>を選択（このツール内の「RenkiStylesheet」フォルダ）<br>
@@ -277,267 +365,485 @@
           <li><strong>③ 変換する</strong>をクリック → 表示されたら<strong>印刷 / PDF保存</strong>でPDFに保存</li>
         </ol>
       </div>
+
       <div class="section">
-        <div class="section-title"><span class="section-num">1</span> 通知書フォルダを選択</div>
-        <div class="drop-zone" id="dropZone">
+        <div class="section-title"><span class="section-num" id="stepNum1">1</span> 通知書フォルダを選択</div>
+        <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="通知書フォルダを選択">
           <input type="file" id="folderInput" webkitdirectory directory multiple>
-          <div class="icon">📁</div>
+          <div class="icon" aria-hidden="true">&#x1F4C1;</div>
           <div class="text">ここをクリックしてフォルダを選択</div>
-          <div class="hint">日本年金機構から届いた電子通知書（.xml ファイル）が入ったフォルダを選んでください</div>
+          <div class="hint">日本年金機構から届いた電子通知書（.xml ファイル）が入ったフォルダを選んでください<br>
+          フォルダをドラッグ＆ドロップでも選択できます</div>
           <div class="file-list" id="fileList"></div>
         </div>
+        <div class="dialog-help" id="dialogHelp1">
+          <strong>フォルダの選び方：</strong><br>
+          1. 表示されたウィンドウで通知書のフォルダを探してクリック<br>
+          2. フォルダの中にファイルが表示されます<br>
+          3. そのまま<strong>「アップロード」ボタン</strong>を押してください<br>
+          <span style="color:#2e7d32">※「アップロード」と表示されますが、インターネットには送信されません。パソコンの中だけで処理します。</span>
+        </div>
       </div>
+
       <div class="section">
-        <div class="section-title"><span class="section-num">2</span> RenkiStylesheet フォルダを選択</div>
-        <div class="drop-zone" id="xslDropZone">
+        <div class="section-title"><span class="section-num" id="stepNum2">2</span> RenkiStylesheet フォルダを選択</div>
+        <div class="drop-zone" id="xslDropZone" role="button" tabindex="0" aria-label="RenkiStylesheetフォルダを選択">
           <input type="file" id="xslFolderInput" webkitdirectory directory multiple>
-          <div class="icon">📂</div>
+          <div class="icon" aria-hidden="true">&#x1F4C2;</div>
           <div class="text">ここをクリックしてフォルダを選択</div>
           <div class="hint">このツール内の「RenkiStylesheet」フォルダを選んでください<br>
           （届出単位用の変換ファイル。※ すでに.xslを置き換えた変換フォルダを①で選んだ場合は不要）</div>
           <div class="file-list" id="xslFileList"></div>
         </div>
+        <div class="dialog-help" id="dialogHelp2">
+          <strong>フォルダの選び方：</strong><br>
+          このHTMLと同じ場所にある <strong>RenkiStylesheet</strong> フォルダを選んでください。<br>
+          <span style="color:#2e7d32">※「アップロード」と表示されますが、ファイルは外部に送信されません。</span>
+        </div>
       </div>
+
       <div class="section">
         <div class="section-title"><span class="section-num">3</span> 変換してPDF保存</div>
         <div class="actions">
           <button class="btn btn-primary" id="convertBtn" disabled>変換する</button>
+          <button class="btn btn-reset" id="resetBtn" type="button">最初からやり直す</button>
         </div>
-        <div class="status" id="status"></div>
-        <div class="error-msg" id="errorMsg"></div>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+        <div class="error-msg" id="errorMsg" role="alert"></div>
       </div>
+
       <div class="result-area" id="resultArea">
-        <div class="result-header">変換結果</div>
-        <div class="result-tabs" id="resultTabs"></div>
+        <div class="result-header" id="resultHeader">変換結果</div>
+        <div class="result-tabs" id="resultTabs" role="tablist"></div>
         <div class="result-frames" id="resultFrames"></div>
         <div class="result-toolbar">
-          <button class="btn btn-secondary" id="printBtn">印刷 / PDF保存</button>
-          <span class="hint">→ 印刷ダイアログで「PDFに保存」または「Microsoft Print to PDF」を選択</span>
+          <button class="btn btn-secondary" id="printBtn" disabled>印刷 / PDF保存</button>
+          <div class="pdf-hint">
+            <strong>PDFに保存する手順：</strong><br>
+            1.「印刷 / PDF保存」ボタンを押す<br>
+            2. 印刷先で <strong>「PDFに保存」</strong> を選ぶ<br>
+            <span style="font-size:0.9em;color:#888">（Windows は「Microsoft Print to PDF」でもOK）</span><br>
+            3.「保存」を押して完了
+          </div>
         </div>
       </div>
+
       <div class="notice">
         ※ 外字を含む電子通知書は変換できません（日本年金機構の仕様）<br>
-        ※ 推奨ブラウザ：Chrome、Edge、Safari
+        ※ 推奨ブラウザ：Google Chrome、Microsoft Edge、Safari<br>
+        <span class="security-badge">&#x1F512; オフラインで動作 &#x2014; ファイルは外部に送信されません</span>
       </div>
+
+      <footer class="site-footer">
+        <img src="assets/dpgg-logo.png" alt="" width="22" height="22">
+        <span>提供：<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">ドッペルゲンガー</a>（<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">https://www.dpgg.me/</a>）</span>
+      </footer>
     </main>
   </div>
 
   <script>
     (function() {
-      const folderInput = document.getElementById('folderInput');
-      const xslFolderInput = document.getElementById('xslFolderInput');
-      const dropZone = document.getElementById('dropZone');
-      const xslDropZone = document.getElementById('xslDropZone');
-      const fileList = document.getElementById('fileList');
-      const xslFileList = document.getElementById('xslFileList');
-      const convertBtn = document.getElementById('convertBtn');
-      const status = document.getElementById('status');
-      const errorMsg = document.getElementById('errorMsg');
-      const resultArea = document.getElementById('resultArea');
-      const resultTabs = document.getElementById('resultTabs');
-      const resultFrames = document.getElementById('resultFrames');
-      const printBtn = document.getElementById('printBtn');
+      var ROOT_TO_XSL = {
+        'N2018003': '2018003', 'N2043003': '2043003', 'N4001004': '4001004',
+        'N4002002': '4002002', 'N4003004': '4003004', 'N7100001': '7100001',
+        'N7110001': '7110001', 'N7120001': '7120001', 'N7120002': '7120002',
+        'N7130001': '7130001', 'N7140001': '7140001', 'N7150001': '7150001',
+        'N7240001': '7240001'
+      };
+      var NOTIF_NAMES = {
+        '2018003': '健康保険法第118条 該当・不該当',
+        '2043003': '厚生年金 種別変更確認',
+        '4001004': '船員保険 標準報酬改定',
+        '4002002': '船員保険 標準賞与額決定',
+        '4003004': '船員保険 種別変更・標準報酬改定',
+        '7100001': '資格取得確認・標準報酬決定',
+        '7110001': '資格取得確認・標準報酬決定',
+        '7120001': '資格喪失確認',
+        '7120002': '資格喪失確認',
+        '7130001': '標準報酬決定',
+        '7140001': '標準報酬改定',
+        '7150001': '標準賞与額決定',
+        '7240001': '年間報酬額算定の不該当'
+      };
 
-      let xmlFiles = [];
-      let xslFromNotification = [];
-      let xslFromRenkiStylesheet = [];
-      let transformedResults = [];
+      var folderInput = document.getElementById('folderInput');
+      var xslFolderInput = document.getElementById('xslFolderInput');
+      var dropZone = document.getElementById('dropZone');
+      var xslDropZone = document.getElementById('xslDropZone');
+      var fileList = document.getElementById('fileList');
+      var xslFileList = document.getElementById('xslFileList');
+      var convertBtn = document.getElementById('convertBtn');
+      var resetBtn = document.getElementById('resetBtn');
+      var status = document.getElementById('status');
+      var errorMsg = document.getElementById('errorMsg');
+      var resultArea = document.getElementById('resultArea');
+      var resultHeader = document.getElementById('resultHeader');
+      var resultTabs = document.getElementById('resultTabs');
+      var resultFrames = document.getElementById('resultFrames');
+      var printBtn = document.getElementById('printBtn');
+      var dialogHelp1 = document.getElementById('dialogHelp1');
+      var dialogHelp2 = document.getElementById('dialogHelp2');
+      var stepNum1 = document.getElementById('stepNum1');
+      var stepNum2 = document.getElementById('stepNum2');
 
-      function getXslFiles() {
-        return mergeXsl(xslFromNotification, xslFromRenkiStylesheet);
-      }
+      var xmlFiles = [];
+      var xslFromNotification = [];
+      var xslFromRenkiStylesheet = [];
+      var transformedResults = [];
+      var iframeReady = {};
 
-      // フォルダ選択
-      dropZone.addEventListener('click', () => folderInput.click());
-      xslDropZone.addEventListener('click', () => xslFolderInput.click());
-      folderInput.addEventListener('change', (e) => {
-        const arr = Array.from(e.target.files || []);
-        xmlFiles = arr.filter(f => f.name.toLowerCase().endsWith('.xml'));
-        xslFromNotification = arr.filter(f => f.name.toLowerCase().endsWith('.xsl'));
-        updateFileList();
-      });
-      xslFolderInput.addEventListener('change', (e) => {
-        const arr = Array.from(e.target.files || []);
-        xslFromRenkiStylesheet = arr.filter(f => f.name.toLowerCase().endsWith('.xsl'));
-        updateFileList();
-      });
-      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-      xslDropZone.addEventListener('dragover', (e) => { e.preventDefault(); xslDropZone.classList.add('dragover'); });
-      xslDropZone.addEventListener('dragleave', () => xslDropZone.classList.remove('dragover'));
-      dropZone.addEventListener('drop', async (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        const items = e.dataTransfer.items;
-        if (!items) return;
-        const filesToAdd = [];
-        for (let i = 0; i < items.length; i++) {
-          const entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
-          if (entry && entry.isDirectory) await readDir(entry, filesToAdd);
-          else { const f = items[i].getAsFile(); if (f) filesToAdd.push(f); }
-        }
-        xmlFiles = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xml'));
-        xslFromNotification = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xsl'));
-        updateFileList();
-      });
-      xslDropZone.addEventListener('drop', async (e) => {
-        e.preventDefault();
-        xslDropZone.classList.remove('dragover');
-        const items = e.dataTransfer.items;
-        if (!items) return;
-        const filesToAdd = [];
-        for (let i = 0; i < items.length; i++) {
-          const entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
-          if (entry && entry.isDirectory) await readDir(entry, filesToAdd);
-          else { const f = items[i].getAsFile(); if (f) filesToAdd.push(f); }
-        }
-        xslFromRenkiStylesheet = filesToAdd.filter(f => f.name.toLowerCase().endsWith('.xsl'));
-        updateFileList();
-      });
-
-      function readDir(dirEntry, out) {
-        return new Promise((resolve) => {
-          const reader = dirEntry.createReader();
-          reader.readEntries(async (entries) => {
-            for (const entry of entries) {
-              if (entry.isDirectory) {
-                await readDir(entry, out);
-              } else {
-                await new Promise((res) => {
-                  entry.file((f) => {
-                    out.push(f);
-                    res();
-                  });
-                });
-              }
-            }
-            resolve();
-          });
-        });
-      }
-
-      function mergeXsl(fromNotification, fromRenkiStylesheet) {
-        const map = new Map();
-        fromNotification.forEach(f => map.set(getBaseName(f.name), f));
-        fromRenkiStylesheet.forEach(f => map.set(getBaseName(f.name), f));
-        return Array.from(map.values());
-      }
-
-      function updateFileList() {
-        const xslFiles = getXslFiles();
-        fileList.innerHTML = xmlFiles.length > 0
-          ? `<strong>選択済み：</strong> XML ${xmlFiles.length}件<ul>${xmlFiles.map(f => '<li>' + f.name + '</li>').join('')}</ul>`
-          : '<span style="color:#999">未選択</span>';
-        xslFileList.innerHTML = xslFiles.length > 0
-          ? `<strong>選択済み：</strong> XSL ${xslFiles.length}件<ul>${xslFiles.map(f => '<li>' + f.name + '</li>').join('')}</ul>`
-          : '<span style="color:#999">未選択（RenkiStylesheet フォルダを選択してください）</span>';
-        dropZone.classList.toggle('has-files', xmlFiles.length > 0);
-        xslDropZone.classList.toggle('has-files', xslFiles.length > 0);
-        convertBtn.disabled = xmlFiles.length === 0 || xslFiles.length === 0;
-        errorMsg.textContent = '';
-        if (xmlFiles.length === 0) errorMsg.textContent = '① 通知書フォルダを選択してください。';
-        else if (xslFiles.length === 0) errorMsg.textContent = '② RenkiStylesheet フォルダを選択してください。（このツール内の RenkiStylesheet フォルダ）';
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
       function getBaseName(filename) {
         return filename.replace(/\.[^.]+$/, '');
       }
 
+      function getXslFiles() {
+        return mergeXsl(xslFromNotification, xslFromRenkiStylesheet);
+      }
+
+      function mergeXsl(fromNotification, fromRenkiStylesheet) {
+        // RenkiStylesheet（届出単位）を優先して上書き
+        var map = new Map();
+        fromNotification.forEach(function(f) { map.set(getBaseName(f.name), f); });
+        fromRenkiStylesheet.forEach(function(f) { map.set(getBaseName(f.name), f); });
+        return Array.from(map.values());
+      }
+
       function parseXml(text) {
-        const parser = new DOMParser();
-        return parser.parseFromString(text, 'text/xml');
+        return new DOMParser().parseFromString(text, 'text/xml');
       }
 
       function transformXml(xmlDoc, xslDoc) {
-        const processor = new XSLTProcessor();
+        var processor = new XSLTProcessor();
         processor.importStylesheet(xslDoc);
-        const result = processor.transformToDocument(xmlDoc);
-        return new XMLSerializer().serializeToString(result);
+        return new XMLSerializer().serializeToString(processor.transformToDocument(xmlDoc));
       }
 
-      convertBtn.addEventListener('click', async () => {
-        errorMsg.textContent = '';
-        status.textContent = '変換中...';
-        convertBtn.disabled = true;
+      function readFile(file) {
+        return new Promise(function(resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function() { resolve(reader.result); };
+          reader.onerror = function() { reject(new Error('ファイルの読み込みに失敗しました: ' + file.name)); };
+          reader.readAsText(file, 'UTF-8');
+        });
+      }
 
-        const xslFiles = getXslFiles();
-        const xslMap = {};
-        xslFiles.forEach(f => {
-          const base = getBaseName(f.name);
+      // FileSystem API は一度に全件を返さないため、空になるまで繰り返し読む
+      function readDirEntries(dirEntry) {
+        return new Promise(function(resolve) {
+          var allFiles = [];
+          var reader = dirEntry.createReader();
+          (function readBatch() {
+            reader.readEntries(function(entries) {
+              if (!entries.length) { resolve(allFiles); return; }
+              var promises = [];
+              entries.forEach(function(entry) {
+                if (entry.isDirectory) {
+                  promises.push(readDirEntries(entry).then(function(files) {
+                    allFiles = allFiles.concat(files);
+                  }));
+                } else {
+                  promises.push(new Promise(function(res) {
+                    entry.file(function(f) { allFiles.push(f); res(); }, function() { res(); });
+                  }));
+                }
+              });
+              Promise.all(promises).then(readBatch);
+            }, function() { resolve(allFiles); });
+          })();
+        });
+      }
+
+      async function collectDroppedFiles(dataTransfer) {
+        var items = dataTransfer && dataTransfer.items;
+        var allFiles = [];
+        if (!items || !items.length) {
+          return Array.from((dataTransfer && dataTransfer.files) || []);
+        }
+        for (var i = 0; i < items.length; i++) {
+          var entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+          if (entry && entry.isDirectory) {
+            allFiles = allFiles.concat(await readDirEntries(entry));
+          } else if (entry) {
+            await new Promise(function(res) {
+              entry.file(function(f) { allFiles.push(f); res(); }, function() { res(); });
+            });
+          } else {
+            var f = items[i].getAsFile && items[i].getAsFile();
+            if (f) allFiles.push(f);
+          }
+        }
+        return allFiles;
+      }
+
+      function findXslKey(xmlText, fileName, xslMap) {
+        var base = getBaseName(fileName);
+        if (xslMap[base]) return base;
+        var m = xmlText.match(/<(N\d{7})\b/);
+        if (m && ROOT_TO_XSL[m[1]] && xslMap[ROOT_TO_XSL[m[1]]]) {
+          return ROOT_TO_XSL[m[1]];
+        }
+        return null;
+      }
+
+      function bindDropZone(zone, input, helpEl, onFiles) {
+        zone.addEventListener('click', function() {
+          if (helpEl) helpEl.classList.add('visible');
+          input.click();
+        });
+        zone.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (helpEl) helpEl.classList.add('visible');
+            input.click();
+          }
+        });
+        input.addEventListener('change', function(e) {
+          if (helpEl) helpEl.classList.remove('visible');
+          onFiles(Array.from(e.target.files || []));
+        });
+        zone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          zone.classList.add('dragover');
+        });
+        zone.addEventListener('dragleave', function() {
+          zone.classList.remove('dragover');
+        });
+        zone.addEventListener('drop', async function(e) {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+          if (helpEl) helpEl.classList.remove('visible');
+          onFiles(await collectDroppedFiles(e.dataTransfer));
+        });
+      }
+
+      bindDropZone(dropZone, folderInput, dialogHelp1, function(arr) {
+        xmlFiles = arr.filter(function(f) { return f.name.toLowerCase().endsWith('.xml'); });
+        xslFromNotification = arr.filter(function(f) { return f.name.toLowerCase().endsWith('.xsl'); });
+        updateFileList();
+      });
+
+      bindDropZone(xslDropZone, xslFolderInput, dialogHelp2, function(arr) {
+        xslFromRenkiStylesheet = arr.filter(function(f) { return f.name.toLowerCase().endsWith('.xsl'); });
+        updateFileList();
+      });
+
+      function updateFileList() {
+        var xslFiles = getXslFiles();
+
+        if (xmlFiles.length > 0) {
+          var names = xmlFiles.map(function(f) {
+            var base = getBaseName(f.name);
+            var label = NOTIF_NAMES[base] || f.name;
+            return '<li>' + escapeHtml(label) + ' <span style="color:#999">(' + escapeHtml(f.name) + ')</span></li>';
+          }).join('');
+          fileList.innerHTML = '<strong>選択済み：</strong> XML ' + xmlFiles.length + '件<ul>' + names + '</ul>';
+        } else {
+          fileList.innerHTML = '<span style="color:#999">未選択</span>';
+        }
+
+        if (xslFiles.length > 0) {
+          xslFileList.innerHTML = '<strong>選択済み：</strong> XSL ' + xslFiles.length + '件<ul>' +
+            xslFiles.map(function(f) { return '<li>' + escapeHtml(f.name) + '</li>'; }).join('') + '</ul>';
+        } else {
+          xslFileList.innerHTML = '<span style="color:#999">未選択（RenkiStylesheet フォルダを選択してください）</span>';
+        }
+
+        dropZone.classList.toggle('has-files', xmlFiles.length > 0);
+        xslDropZone.classList.toggle('has-files', xslFiles.length > 0);
+        stepNum1.classList.toggle('done', xmlFiles.length > 0);
+        stepNum2.classList.toggle('done', xslFiles.length > 0);
+        convertBtn.disabled = xmlFiles.length === 0 || xslFiles.length === 0;
+
+        errorMsg.textContent = '';
+        if (xmlFiles.length === 0) {
+          errorMsg.textContent = '① 通知書フォルダを選択してください。';
+        } else if (xslFiles.length === 0) {
+          errorMsg.textContent = '② RenkiStylesheet フォルダを選択してください。（このツール内の RenkiStylesheet フォルダ）';
+        }
+      }
+
+      convertBtn.addEventListener('click', async function() {
+        errorMsg.textContent = '';
+        status.innerHTML = '<span class="spinner"></span>変換しています...';
+        status.className = 'status';
+        convertBtn.disabled = true;
+        printBtn.disabled = true;
+
+        var xslFiles = getXslFiles();
+        var xslMap = {};
+        xslFiles.forEach(function(f) {
+          var base = getBaseName(f.name);
           if (!xslMap[base]) xslMap[base] = f;
         });
 
         transformedResults = [];
-        const errors = [];
+        iframeReady = {};
+        var errors = [];
+        var skipped = [];
 
-        for (const xmlFile of xmlFiles) {
-          const base = getBaseName(xmlFile.name);
-          const xslFile = xslMap[base];
-          if (!xslFile) {
-            errors.push(`${xmlFile.name}: 対応する ${base}.xsl が見つかりません`);
-            continue;
-          }
+        for (var i = 0; i < xmlFiles.length; i++) {
+          var xmlFile = xmlFiles[i];
           try {
-            const xmlText = await readFile(xmlFile);
-            const xslText = await readFile(xslFile);
-            const xmlDoc = parseXml(xmlText);
-            const xslDoc = parseXml(xslText);
-            const html = transformXml(xmlDoc, xslDoc);
-            transformedResults.push({ name: xmlFile.name, html });
+            var xmlText = await readFile(xmlFile);
+            var xslKey = findXslKey(xmlText, xmlFile.name, xslMap);
+            if (!xslKey) {
+              skipped.push(xmlFile.name);
+              continue;
+            }
+
+            var xslText = await readFile(xslMap[xslKey]);
+            var xmlDoc = parseXml(xmlText);
+            if (xmlDoc.querySelector('parsererror')) {
+              errors.push(xmlFile.name + '：ファイルの形式に問題があるため変換できませんでした');
+              continue;
+            }
+
+            var xslDoc = parseXml(xslText);
+            if (xslDoc.querySelector('parsererror')) {
+              errors.push(xslKey + '.xsl：スタイルシートの読み込みに失敗しました');
+              continue;
+            }
+
+            var html = transformXml(xmlDoc, xslDoc);
+            var label = NOTIF_NAMES[xslKey] || xmlFile.name;
+            transformedResults.push({ name: xmlFile.name, label: label, html: html });
           } catch (e) {
-            errors.push(`${xmlFile.name}: ${e.message || e}`);
+            errors.push(xmlFile.name + '：' + (e.message || e));
           }
         }
 
-        status.textContent = `変換完了: ${transformedResults.length}件`;
-        if (errors.length > 0) {
-          errorMsg.textContent = errors.join('\n');
-        }
         convertBtn.disabled = false;
 
         if (transformedResults.length > 0) {
+          status.textContent = '変換完了！ ' + transformedResults.length + ' 件を一覧表形式に変換しました。';
+          status.className = 'status ok';
           renderResults();
           resultArea.classList.add('visible');
+          setTimeout(function() {
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        } else {
+          status.textContent = '変換できる通知書がありませんでした。正しいフォルダを選んでいるか確認してください。';
+          status.className = 'status err';
+          resultArea.classList.remove('visible');
         }
+
+        var msgs = [];
+        if (errors.length > 0) msgs = msgs.concat(errors);
+        if (skipped.length > 0) {
+          msgs.push('以下のファイルは対応するXSLが見つからないため変換しませんでした：\n  ' + skipped.join(', '));
+        }
+        if (msgs.length > 0) errorMsg.textContent = msgs.join('\n');
       });
 
-      function readFile(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject(new Error('ファイルの読み込みに失敗しました'));
-          reader.readAsText(file, 'UTF-8');
+      function activateTab(index) {
+        var tabs = resultTabs.querySelectorAll('.result-tab');
+        var frames = resultFrames.querySelectorAll('.result-frame');
+        tabs.forEach(function(t, i) {
+          var on = i === index;
+          t.classList.toggle('active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+        });
+        frames.forEach(function(f, i) {
+          f.classList.toggle('active', i === index);
         });
       }
 
       function renderResults() {
         resultTabs.innerHTML = '';
         resultFrames.innerHTML = '';
-        transformedResults.forEach((r, i) => {
-          const tab = document.createElement('div');
+        resultHeader.textContent = '変換結果（' + transformedResults.length + '件）';
+        printBtn.disabled = true;
+
+        transformedResults.forEach(function(r, i) {
+          var tab = document.createElement('button');
+          tab.type = 'button';
           tab.className = 'result-tab' + (i === 0 ? ' active' : '');
-          tab.textContent = r.name;
-          tab.addEventListener('click', () => {
-            resultTabs.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
-            resultFrames.querySelectorAll('.result-frame').forEach(f => f.classList.remove('active'));
-            tab.classList.add('active');
-            resultFrames.children[i].classList.add('active');
+          tab.setAttribute('role', 'tab');
+          tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+          tab.tabIndex = i === 0 ? 0 : -1;
+          tab.textContent = r.label;
+          tab.title = r.name;
+          tab.addEventListener('click', function() { activateTab(i); });
+          tab.addEventListener('keydown', function(e) {
+            var next = null;
+            if (e.key === 'ArrowRight') next = (i + 1) % transformedResults.length;
+            if (e.key === 'ArrowLeft') next = (i - 1 + transformedResults.length) % transformedResults.length;
+            if (e.key === 'Home') next = 0;
+            if (e.key === 'End') next = transformedResults.length - 1;
+            if (next !== null) {
+              e.preventDefault();
+              activateTab(next);
+              resultTabs.children[next].focus();
+            }
           });
           resultTabs.appendChild(tab);
 
-          const iframe = document.createElement('iframe');
+          var iframe = document.createElement('iframe');
           iframe.className = 'result-frame' + (i === 0 ? ' active' : '');
-          iframe.sandbox = 'allow-same-origin';
+          iframe.title = r.label;
+          iframe.setAttribute('sandbox', 'allow-same-origin allow-modals');
+          iframe.addEventListener('load', function() {
+            iframeReady[i] = true;
+            var allReady = transformedResults.every(function(_, idx) { return iframeReady[idx]; });
+            if (allReady) printBtn.disabled = false;
+          });
           resultFrames.appendChild(iframe);
           iframe.srcdoc = r.html;
         });
       }
 
-      printBtn.addEventListener('click', () => {
-        const activeFrame = resultFrames.querySelector('.result-frame.active');
-        if (!activeFrame || !activeFrame.contentWindow) return;
-        activeFrame.contentWindow.print();
+      printBtn.addEventListener('click', function() {
+        var activeFrame = resultFrames.querySelector('.result-frame.active');
+        if (!activeFrame || !activeFrame.contentWindow) {
+          alert('表示中の通知書がありません。');
+          return;
+        }
+        try {
+          activeFrame.contentWindow.print();
+        } catch (e) {
+          alert('印刷を開始できませんでした。\nブラウザを Google Chrome または Microsoft Edge に変更してお試しください。');
+        }
       });
+
+      resetBtn.addEventListener('click', function() {
+        xmlFiles = [];
+        xslFromNotification = [];
+        xslFromRenkiStylesheet = [];
+        transformedResults = [];
+        iframeReady = {};
+        folderInput.value = '';
+        xslFolderInput.value = '';
+        fileList.innerHTML = '';
+        xslFileList.innerHTML = '';
+        status.textContent = '';
+        status.className = 'status';
+        errorMsg.textContent = '';
+        resultArea.classList.remove('visible');
+        resultTabs.innerHTML = '';
+        resultFrames.innerHTML = '';
+        convertBtn.disabled = true;
+        printBtn.disabled = true;
+        dropZone.classList.remove('has-files');
+        xslDropZone.classList.remove('has-files');
+        stepNum1.classList.remove('done');
+        stepNum2.classList.remove('done');
+        dialogHelp1.classList.remove('visible');
+        dialogHelp2.classList.remove('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      updateFileList();
     })();
   </script>
 </body>

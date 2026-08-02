@@ -45,6 +45,7 @@ xml/
     ├── 届出単位変換ツール.html   ← おすすめ（単一ファイル）
     ├── index.html               ← 2ステップ版
     ├── build.sh                 ← 届出単位変換ツール.html を生成するビルドスクリプト
+    ├── assets/                  ← フッター用ロゴなど
     ├── README.md
     ├── 配布要領.md
     └── RenkiStylesheet/         ← 届出単位用XSL（13種類の通知書に対応）
@@ -89,3 +90,7 @@ RenkiStylesheet（XSLファイル）は日本年金機構の仕様に基づく�
 cd renkin-converter
 ./build.sh
 ```
+
+---
+
+提供：[ドッペルゲンガー](https://www.dpgg.me/)

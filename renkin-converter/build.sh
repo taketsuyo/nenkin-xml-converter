@@ -1,10 +1,18 @@
 #!/bin/bash
+set -euo pipefail
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 XSL_DIR="$SCRIPT_DIR/RenkiStylesheet"
+LOGO_FILE="$SCRIPT_DIR/assets/dpgg-logo.png"
 OUTPUT="$SCRIPT_DIR/届出単位変換ツール.html"
 
 if [ ! -d "$XSL_DIR" ]; then
   echo "エラー: RenkiStylesheet フォルダが見つかりません"
+  exit 1
+fi
+
+if [ ! -f "$LOGO_FILE" ]; then
+  echo "エラー: ロゴファイルが見つかりません: $LOGO_FILE"
   exit 1
 fi
 
@@ -22,6 +30,9 @@ for xsl_file in "$XSL_DIR"/*.xsl; do
   XSL_DATA+="\"$basename\":\"$b64\""
 done
 XSL_DATA+="}"
+
+LOGO_B64=$(base64 < "$LOGO_FILE" | tr -d '\n')
+LOGO_DATA_URI="data:image/png;base64,${LOGO_B64}"
 
 echo "HTMLファイルを生成中..."
 cat > "$OUTPUT" << 'HTMLSTART'
@@ -48,7 +59,8 @@ cat > "$OUTPUT" << 'HTMLSTART'
     .step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#159895;color:#fff;border-radius:50%;font-size:1rem;flex-shrink:0}
     .step-num.done{background:#4caf50}
     .drop-zone{border:2.5px dashed #b0b0b0;border-radius:12px;padding:40px 28px;text-align:center;background:#fafbfc;cursor:pointer;transition:all .25s}
-    .drop-zone:hover,.drop-zone.dragover{border-color:#159895;background:#e8f6f6}
+    .drop-zone:hover,.drop-zone.dragover,.drop-zone:focus{border-color:#159895;background:#e8f6f6;outline:none}
+    .drop-zone:focus-visible{box-shadow:0 0 0 3px rgba(21,152,149,.35)}
     .drop-zone.done{border-color:#4caf50;border-style:solid;background:#f0f9f0}
     .drop-zone input{display:none}
     .drop-zone .dz-icon{font-size:2.8rem;margin-bottom:12px}
@@ -65,7 +77,8 @@ cat > "$OUTPUT" << 'HTMLSTART'
     .btn-primary:hover:not(:disabled){background:#128a87;transform:translateY(-2px);box-shadow:0 6px 16px rgba(21,152,149,.3)}
     .btn-primary:disabled{background:#bbb;cursor:not-allowed;transform:none}
     .btn-secondary{background:#fff;color:#159895;border:2px solid #159895;padding:14px 28px;font-size:1.05rem}
-    .btn-secondary:hover{background:#e8f6f6}
+    .btn-secondary:hover:not(:disabled){background:#e8f6f6}
+    .btn-secondary:disabled{color:#999;border-color:#ccc;cursor:not-allowed}
     .btn-reset{background:#fff;color:#888;border:1px solid #ccc;padding:10px 20px;font-size:.9rem}
     .btn-reset:hover{background:#f5f5f5;color:#555}
     .convert-area{text-align:center;margin:32px 0}
@@ -77,9 +90,10 @@ cat > "$OUTPUT" << 'HTMLSTART'
     .result-area.visible{display:block}
     .result-header{background:#159895;color:#fff;padding:14px 20px;font-weight:600;font-size:1rem}
     .result-tabs{display:flex;background:#f0f0f0;overflow-x:auto;padding:6px 8px 0;gap:2px}
-    .result-tab{padding:12px 20px;cursor:pointer;font-size:.9rem;border-radius:8px 8px 0 0;white-space:nowrap;background:#e8e8e8}
+    .result-tab{padding:12px 20px;cursor:pointer;font-size:.9rem;border-radius:8px 8px 0 0;white-space:nowrap;background:#e8e8e8;border:none;font-family:inherit;color:inherit}
     .result-tab:hover{background:#ddd}
     .result-tab.active{background:#fff;font-weight:600;box-shadow:0 -2px 4px rgba(0,0,0,.05)}
+    .result-tab:focus-visible{outline:2px solid #159895;outline-offset:-2px}
     .result-frame{width:100%;height:65vh;min-height:480px;border:none;display:none;background:#fff}
     .result-frame.active{display:block}
     .result-toolbar{padding:18px 20px;background:#f8f8f8;border-top:1px solid #e0e0e0;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
@@ -89,8 +103,13 @@ cat > "$OUTPUT" << 'HTMLSTART'
     .dialog-help{display:none;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:16px 20px;margin-top:12px;font-size:.92rem;color:#5d4037;line-height:1.8}
     .dialog-help.visible{display:block}
     .dialog-help strong{color:#e65100}
+    .site-footer{margin-top:28px;padding-top:18px;border-top:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.78rem;color:#999}
+    .site-footer img{width:22px;height:22px;border-radius:5px;flex-shrink:0}
+    .site-footer a{color:#7a8a96;text-decoration:none}
+    .site-footer a:hover{color:#159895;text-decoration:underline}
     .spinner{display:inline-block;width:20px;height:20px;border:3px solid #ddd;border-top:3px solid #159895;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
     @keyframes spin{to{transform:rotate(360deg)}}
+    @media (max-width:640px){body{padding:10px}header,.main{padding:20px}header h1{font-size:1.25rem}.result-frame{height:55vh;min-height:320px}}
     @media print{body *{visibility:hidden}.result-area,.result-area *{visibility:visible}.result-area{position:absolute;left:0;top:0;width:100%;border:none}.result-tabs,.result-toolbar,.result-header{display:none!important}}
   </style>
 </head>
@@ -104,7 +123,7 @@ cat > "$OUTPUT" << 'HTMLSTART'
       <div class="guide-box">
         <h3>使い方</h3>
         <ol>
-          <li>下の枠をクリックして、<strong>通知書が保存されているフォルダ</strong>を選ぶ</li>
+          <li>下の枠をクリックして、<strong>通知書が保存されているフォルダ</strong>を選ぶ（ドラッグ＆ドロップも可）</li>
           <li><strong>「変換する」</strong>ボタンを押す</li>
           <li>変換結果を確認し、<strong>「印刷 / PDF保存」</strong>ボタンで保存</li>
         </ol>
@@ -115,9 +134,9 @@ cat > "$OUTPUT" << 'HTMLSTART'
           <span class="step-num" id="stepNum1">1</span>
           通知書のフォルダを選ぶ
         </div>
-        <div class="drop-zone" id="dropZone">
+        <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="通知書フォルダを選択">
           <input type="file" id="folderInput" webkitdirectory directory multiple>
-          <div class="dz-icon">&#x1F4C2;</div>
+          <div class="dz-icon" aria-hidden="true">&#x1F4C2;</div>
           <div class="dz-text">ここをクリックしてフォルダを選択</div>
           <div class="dz-hint">
             年金機構から届いた電子通知書のフォルダを選んでください<br>
@@ -137,13 +156,13 @@ cat > "$OUTPUT" << 'HTMLSTART'
 
       <div class="convert-area" id="convertArea">
         <button class="btn btn-primary" id="convertBtn" disabled>変換する</button>
-        <div class="status" id="statusMsg"></div>
-        <div class="error-detail" id="errorDetail" style="display:none"></div>
+        <div class="status" id="statusMsg" role="status" aria-live="polite"></div>
+        <div class="error-detail" id="errorDetail" style="display:none" role="alert"></div>
       </div>
 
       <div class="result-area" id="resultArea">
         <div class="result-header" id="resultHeader">変換結果</div>
-        <div class="result-tabs" id="resultTabs"></div>
+        <div class="result-tabs" id="resultTabs" role="tablist"></div>
         <div id="resultFrames"></div>
         <div class="result-toolbar">
           <button class="btn btn-secondary" id="printBtn" disabled>印刷 / PDF保存</button>
@@ -163,9 +182,14 @@ cat > "$OUTPUT" << 'HTMLSTART'
 
       <div class="notice">
         ※ 外字を含む電子通知書は変換できない場合があります（年金機構の仕様による制限）<br>
-        ※ 推奨ブラウザ：Google Chrome、Microsoft Edge<br>
+        ※ 推奨ブラウザ：Google Chrome、Microsoft Edge、Safari<br>
         <span class="security-badge">&#x1F512; オフラインで動作 &#x2014; ファイルは外部に送信されません</span>
       </div>
+
+      <footer class="site-footer">
+        <img id="brandLogo" src="" alt="" width="22" height="22">
+        <span>提供：<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">ドッペルゲンガー</a>（<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">https://www.dpgg.me/</a>）</span>
+      </footer>
     </main>
   </div>
 
@@ -173,6 +197,7 @@ cat > "$OUTPUT" << 'HTMLSTART'
 HTMLSTART
 
 echo "    var XSL_DATA = $XSL_DATA;" >> "$OUTPUT"
+echo "    var LOGO_DATA_URI = $(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$LOGO_DATA_URI");" >> "$OUTPUT"
 
 cat >> "$OUTPUT" << 'HTMLEND'
 
@@ -200,6 +225,9 @@ cat >> "$OUTPUT" << 'HTMLEND'
     };
 
     (function() {
+      var brandLogo = document.getElementById('brandLogo');
+      if (brandLogo && typeof LOGO_DATA_URI === 'string') brandLogo.src = LOGO_DATA_URI;
+
       var dropZone = document.getElementById('dropZone');
       var folderInput = document.getElementById('folderInput');
       var dropResult = document.getElementById('dropResult');
@@ -220,6 +248,15 @@ cat >> "$OUTPUT" << 'HTMLEND'
       var xmlFiles = [];
       var transformedResults = [];
       var iframeReady = {};
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
 
       function decodeB64(b64) {
         var raw = atob(b64);
@@ -252,7 +289,7 @@ cat >> "$OUTPUT" << 'HTMLEND'
       function findXslKey(xmlText, fileName) {
         var base = getBaseName(fileName);
         if (XSL_DATA[base]) return base;
-        var m = xmlText.match(/<(N\d{7})/);
+        var m = xmlText.match(/<(N\d{7})\b/);
         if (m && ROOT_TO_XSL[m[1]]) return ROOT_TO_XSL[m[1]];
         return null;
       }
@@ -272,19 +309,49 @@ cat >> "$OUTPUT" << 'HTMLEND'
                   }));
                 } else {
                   promises.push(new Promise(function(res) {
-                    entry.file(function(f) { allFiles.push(f); res(); });
+                    entry.file(function(f) { allFiles.push(f); res(); }, function() { res(); });
                   }));
                 }
               });
               Promise.all(promises).then(readBatch);
-            });
+            }, function() { resolve(allFiles); });
           })();
         });
       }
 
-      dropZone.addEventListener('click', function() {
+      async function collectDroppedFiles(dataTransfer) {
+        var items = dataTransfer && dataTransfer.items;
+        var allFiles = [];
+        if (!items || !items.length) {
+          return Array.from((dataTransfer && dataTransfer.files) || []);
+        }
+        for (var i = 0; i < items.length; i++) {
+          var entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+          if (entry && entry.isDirectory) {
+            allFiles = allFiles.concat(await readDirEntries(entry));
+          } else if (entry) {
+            await new Promise(function(res) {
+              entry.file(function(f) { allFiles.push(f); res(); }, function() { res(); });
+            });
+          } else {
+            var f = items[i].getAsFile && items[i].getAsFile();
+            if (f) allFiles.push(f);
+          }
+        }
+        return allFiles;
+      }
+
+      function openFolderPicker() {
         dialogHelp.classList.add('visible');
         folderInput.click();
+      }
+
+      dropZone.addEventListener('click', openFolderPicker);
+      dropZone.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openFolderPicker();
+        }
       });
 
       dropZone.addEventListener('dragover', function(e) {
@@ -296,21 +363,7 @@ cat >> "$OUTPUT" << 'HTMLEND'
       dropZone.addEventListener('drop', async function(e) {
         e.preventDefault();
         dropZone.classList.remove('dragover');
-        var items = e.dataTransfer.items;
-        if (!items || !items.length) return;
-        var allFiles = [];
-        for (var i = 0; i < items.length; i++) {
-          var entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
-          if (entry && entry.isDirectory) {
-            var files = await readDirEntries(entry);
-            allFiles = allFiles.concat(files);
-          } else if (entry) {
-            await new Promise(function(res) {
-              entry.file(function(f) { allFiles.push(f); res(); });
-            });
-          }
-        }
-        handleFiles(allFiles);
+        handleFiles(await collectDroppedFiles(e.dataTransfer));
       });
 
       folderInput.addEventListener('change', function(e) {
@@ -345,9 +398,9 @@ cat >> "$OUTPUT" << 'HTMLEND'
           var label = NOTIF_NAMES[base] || f.name;
           if (xslKey) {
             matched++;
-            names.push('<li style="color:#2e7d32">&#x2714; ' + label + '</li>');
+            names.push('<li style="color:#2e7d32">&#x2714; ' + escapeHtml(label) + '</li>');
           } else {
-            names.push('<li style="color:#999">&#x25CB; ' + f.name + '（確認中...変換時に判定します）</li>');
+            names.push('<li style="color:#999">&#x25CB; ' + escapeHtml(f.name) + '（確認中...変換時に判定します）</li>');
           }
         });
 
@@ -391,7 +444,7 @@ cat >> "$OUTPUT" << 'HTMLEND'
             var xmlText = await readFileText(xmlFile);
             var xslKey = findXslKey(xmlText, xmlFile.name);
 
-            if (!xslKey) {
+            if (!xslKey || !XSL_DATA[xslKey]) {
               skipped.push(xmlFile.name);
               continue;
             }
@@ -405,6 +458,11 @@ cat >> "$OUTPUT" << 'HTMLEND'
             }
 
             var xslDoc = parseXml(xslText);
+            if (xslDoc.querySelector('parsererror')) {
+              errors.push(xslKey + '.xsl：スタイルシートの読み込みに失敗しました');
+              continue;
+            }
+
             var html = transformXml(xmlDoc, xslDoc);
             var label = NOTIF_NAMES[xslKey] || xmlFile.name;
             transformedResults.push({ name: xmlFile.name, label: label, html: html });
@@ -437,26 +495,54 @@ cat >> "$OUTPUT" << 'HTMLEND'
         }
       });
 
+      function activateTab(index) {
+        var tabs = resultTabs.querySelectorAll('.result-tab');
+        var frames = resultFrames.querySelectorAll('.result-frame');
+        tabs.forEach(function(t, i) {
+          var on = i === index;
+          t.classList.toggle('active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+        });
+        frames.forEach(function(f, i) {
+          f.classList.toggle('active', i === index);
+        });
+      }
+
       function renderResults() {
         resultTabs.innerHTML = '';
         resultFrames.innerHTML = '';
         resultHeader.textContent = '変換結果（' + transformedResults.length + '件）';
+        printBtn.disabled = true;
 
         transformedResults.forEach(function(r, i) {
-          var tab = document.createElement('div');
+          var tab = document.createElement('button');
+          tab.type = 'button';
           tab.className = 'result-tab' + (i === 0 ? ' active' : '');
+          tab.setAttribute('role', 'tab');
+          tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+          tab.tabIndex = i === 0 ? 0 : -1;
           tab.textContent = r.label;
           tab.title = r.name;
-          tab.addEventListener('click', function() {
-            resultTabs.querySelectorAll('.result-tab').forEach(function(t) { t.classList.remove('active'); });
-            resultFrames.querySelectorAll('.result-frame').forEach(function(f) { f.classList.remove('active'); });
-            tab.classList.add('active');
-            resultFrames.children[i].classList.add('active');
+          tab.addEventListener('click', function() { activateTab(i); });
+          tab.addEventListener('keydown', function(e) {
+            var next = null;
+            if (e.key === 'ArrowRight') next = (i + 1) % transformedResults.length;
+            if (e.key === 'ArrowLeft') next = (i - 1 + transformedResults.length) % transformedResults.length;
+            if (e.key === 'Home') next = 0;
+            if (e.key === 'End') next = transformedResults.length - 1;
+            if (next !== null) {
+              e.preventDefault();
+              activateTab(next);
+              resultTabs.children[next].focus();
+            }
           });
           resultTabs.appendChild(tab);
 
           var iframe = document.createElement('iframe');
           iframe.className = 'result-frame' + (i === 0 ? ' active' : '');
+          iframe.title = r.label;
+          iframe.setAttribute('sandbox', 'allow-same-origin allow-modals');
           iframe.addEventListener('load', function() {
             iframeReady[i] = true;
             var allReady = transformedResults.every(function(_, idx) { return iframeReady[idx]; });
