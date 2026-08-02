@@ -10,14 +10,17 @@
 
 | 利用形態 | ファイル | 特徴 |
 |----------|----------|------|
-| **おすすめ（1ステップ）** | [届出単位変換ツール.html](renkin-converter/届出単位変換ツール.html) | 通知書フォルダを選ぶだけ。XSL内蔵（約380KB） |
+| **Web版（おすすめ）** | [GitHub Pages](https://taketsuyo.github.io/nenkin-xml-converter/) | ブラウザで開くだけ。XSL内蔵 |
+| **単一ファイル版** | [届出単位変換ツール.html](renkin-converter/届出単位変換ツール.html) | 通知書フォルダを選ぶだけ。XSL内蔵（約380KB） |
 | **2ステップ版** | [index.html](renkin-converter/index.html) | 通知書フォルダと RenkiStylesheet フォルダをそれぞれ選択 |
 
 ### 使い方（3ステップ）
 
-1. **届出単位変換ツール.html** をダブルクリックしてブラウザで開く
+1. [Web版](https://taketsuyo.github.io/nenkin-xml-converter/) を開くか、**届出単位変換ツール.html** をダブルクリック
 2. 画面の指示に従い、**通知書が入ったフォルダ**を選択
 3. **「変換する」** をクリック → 表示されたら **「印刷 / PDF保存」** でPDFに保存
+
+※ Web版でも変換処理はブラウザ内で完結し、通知書ファイルはサーバーへ送信されません。
 
 ---
 

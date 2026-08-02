@@ -187,7 +187,7 @@ cat > "$OUTPUT" << 'HTMLSTART'
       </div>
 
       <footer class="site-footer">
-        <img id="brandLogo" src="" alt="" width="22" height="22">
+        <img id="brandLogo" src="" alt="ドッペルゲンガー" width="22" height="22">
         <span>提供：<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">ドッペルゲンガー</a>（<a href="https://www.dpgg.me/" target="_blank" rel="noopener noreferrer">https://www.dpgg.me/</a>）</span>
       </footer>
     </main>
@@ -554,6 +554,12 @@ cat >> "$OUTPUT" << 'HTMLEND'
           resultFrames.appendChild(iframe);
           iframe.srcdoc = r.html;
         });
+
+        // 一部環境で load が発火しない場合のフォールバック
+        setTimeout(function() {
+          printBtn.disabled = false;
+          convertBtn.disabled = false;
+        }, 2000);
       }
 
       printBtn.addEventListener('click', function() {

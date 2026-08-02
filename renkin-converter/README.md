@@ -49,7 +49,7 @@ renkin-converter/
 ├── 届出単位変換ツール.html  ← おすすめ（単一ファイル）
 ├── index.html               ← 2ステップ版
 ├── build.sh                 ← 単一ファイル版を生成するビルドスクリプト
-├── assets/                  ← フッター用ロゴなど
+├── assets/                  ← ビルド用ロゴ（HTMLへ埋め込み済み）
 ├── README.md
 ├── 配布要領.md
 └── RenkiStylesheet/         ← 届出単位用XSL（index.html 用）
@@ -62,4 +62,5 @@ renkin-converter/
 
 - 外字を含む電子通知書は変換できません（日本年金機構の仕様）
 - 推奨ブラウザ：Chrome、Edge、Safari
+- Web版: https://taketsuyo.github.io/nenkin-xml-converter/
 - 本ツールは [ドッペルゲンガー](https://www.dpgg.me/) により提供されています
